@@ -28,22 +28,7 @@ public class DbDataManager {
         Cursor cursor = db.rawQuery("SELECT * FROM " + DbContracts.CountryTable.TABLE_NAME +
                 " ORDER BY "+ CountryTable.COUNTRY_NAME+" ASC;", null);
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()){
-            String countryName, continent, wikiUrl, smallImgUrl, bigImgUrl;
-            long population;
-            double gdp;
-            countryName = cursor.getString(cursor.getColumnIndex(CountryTable.COUNTRY_NAME));
-            continent = cursor.getString(cursor.getColumnIndex(CountryTable.CONTINENT));
-            population = cursor.getLong(cursor.getColumnIndex(CountryTable.POPULATION));
-            gdp = cursor.getDouble(cursor.getColumnIndex(CountryTable.GDP));
-            wikiUrl = cursor.getString(cursor.getColumnIndex(CountryTable.WIKI_PAGE_URL));
-            smallImgUrl = cursor.getString(cursor.getColumnIndex(CountryTable.FLAG_SMALL_IMAGE_URL));
-            bigImgUrl = cursor.getString(cursor.getColumnIndex(CountryTable.FLAG_BIG_IMAGE_URL));
-            Country country = new Country(countryName, population, gdp, continent);
-            country.addInternetResources(wikiUrl, smallImgUrl, bigImgUrl);
-            countries.add(country);
-            cursor.moveToNext();
-        }
+        addCountriesToList(cursor, countries);
         cursor.close();
         return countries;
     }
@@ -63,6 +48,25 @@ public class DbDataManager {
     private void parseArrayListOfCountriesToDb(ArrayList<Country> countries){
         for(int i = 0; i < countries.size(); i++){
             addCountryToDb(countries.get(i));
+        }
+    }
+
+    private void addCountriesToList(Cursor cursor, ArrayList<Country> countries){
+        while (!cursor.isAfterLast()){
+            String countryName, continent, wikiUrl, smallImgUrl, bigImgUrl;
+            long population;
+            double gdp;
+            countryName = cursor.getString(cursor.getColumnIndex(CountryTable.COUNTRY_NAME));
+            continent = cursor.getString(cursor.getColumnIndex(CountryTable.CONTINENT));
+            population = cursor.getLong(cursor.getColumnIndex(CountryTable.POPULATION));
+            gdp = cursor.getDouble(cursor.getColumnIndex(CountryTable.GDP));
+            wikiUrl = cursor.getString(cursor.getColumnIndex(CountryTable.WIKI_PAGE_URL));
+            smallImgUrl = cursor.getString(cursor.getColumnIndex(CountryTable.FLAG_SMALL_IMAGE_URL));
+            bigImgUrl = cursor.getString(cursor.getColumnIndex(CountryTable.FLAG_BIG_IMAGE_URL));
+            Country country = new Country(countryName, population, gdp, continent);
+            country.addInternetResources(wikiUrl, smallImgUrl, bigImgUrl);
+            countries.add(country);
+            cursor.moveToNext();
         }
     }
 
